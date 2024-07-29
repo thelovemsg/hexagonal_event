@@ -3,7 +3,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   application:
-    name: sample
+    name: rentalms
   profiles:
     active: default
   datasource:
