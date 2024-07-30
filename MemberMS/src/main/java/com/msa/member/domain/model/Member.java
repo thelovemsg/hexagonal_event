@@ -15,7 +15,8 @@ import java.util.List;
 @Entity
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long MemberNo;
     @Embedded
     private IDName idName;
@@ -49,5 +50,12 @@ public class Member {
 
     public void usePoint(Long point) throws Exception {
         this.point.removePoint(point);
+    }
+
+    public Member login(IDName idName, Password password) {
+        return this;
+    }
+
+    public void logout(IDName idName) {
     }
 }

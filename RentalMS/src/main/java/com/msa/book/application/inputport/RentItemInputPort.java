@@ -1,8 +1,10 @@
 package com.msa.book.application.inputport;
 
+import com.msa.book.application.outputport.EventOutputPort;
 import com.msa.book.application.outputport.RentalCardOutputPort;
 import com.msa.book.application.RentItemUsecase;
 import com.msa.book.domain.model.RentalCard;
+import com.msa.book.domain.model.event.ItemRented;
 import com.msa.book.domain.model.vo.IDName;
 import com.msa.book.domain.model.vo.Item;
 import com.msa.book.framework.web.dto.RentalCardOutputDTO;
@@ -18,6 +20,7 @@ import javax.transaction.Transactional;
 public class RentItemInputPort implements RentItemUsecase {
 
     private final RentalCardOutputPort rentalCardOutputPort;
+    private final EventOutputPort eventOutputPort;
 
     @Override
     public RentalCardOutputDTO rentItem(UserItemInputDTO rental) {
@@ -26,7 +29,10 @@ public class RentItemInputPort implements RentItemUsecase {
 
         Item newItem = new Item(rental.getItemId(), rental.getItemTitle());
         rentalCard.rentItem(newItem);
-//        RentalCard save = rentalCardOutputPort.save(rentalCard);
+        //대여 이벤트 생성 및 발행
+        ItemRented itemRentedEvent = RentalCard.createItemRentedEvent(rentalCard.getMember(), newItem, 10L);
+        eventOutputPort.occurRentalEvent(itemRentedEvent);
+
         return RentalCardOutputDTO.mapToDTO(rentalCard);
     }
 }
